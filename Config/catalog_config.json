@@ -1,0 +1,51 @@
+{
+  "//": "BR Item Shop Config",
+  "daily1": {
+    "itemGrants": [
+      "AthenaCharacter:CID_292_Athena_Commando_F_Dieselpunk02"
+    ],
+    "price": 1200
+  },
+  "daily2": {
+    "itemGrants": [
+      "AthenaCharacter:CID_298_Athena_Commando_F_IceMaiden"
+    ],
+    "price": 2000
+  },
+  "daily3": {
+    "itemGrants": [
+      "AthenaDance:EID_SquishyDance"
+    ],
+    "price": 500
+  },
+  "daily4": {
+    "itemGrants": [
+      "AthenaBackpack:BID_229_LuckyRiderMale"
+    ],
+    "price": 1500
+  },
+  "daily5": {
+    "itemGrants": [
+      "AthenaGlider:Glider_ID_112_TechOps"
+    ],
+    "price": 1200
+  },
+  "daily6": {
+    "itemGrants": [
+      "AthenaPickaxe:Pickaxe_ID_095_FootballTrophy"
+    ],
+    "price": 500
+  },
+  "featured1": {
+    "itemGrants": [
+      "AthenaCharacter:CID_174_Athena_Commando_F_CarbideWhite"
+    ],
+    "price": 2000
+  },
+  "featured2": {
+    "itemGrants": [
+      "AthenaCharacter:CID_030_Athena_Commando_M_Halloween"
+    ],
+    "price": 1500
+  }
+}

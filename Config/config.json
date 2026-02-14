@@ -1,0 +1,67 @@
+{
+  "discord": {
+    "moderators": ["",""],
+    "bUseDiscordBot": true,
+    "bot_token": "",
+    "bEnableInGamePlayerCount": true
+  },
+  "mongodb": {
+    "database": "mongodb://127.0.0.1/Shyro"
+  },
+  "chat": {
+    "EnableGlobalChat": false
+  },
+
+  "port": 3551,
+  "bEnableDebugLogs": true,
+  "bEnableRebootUser": true,
+  "bEnableCrossBans": true,
+
+  "Api": {
+    "bApiKey": "API",
+    "reasons": {
+      "Kill": 25,
+      "Win": 50
+    }
+  },
+
+  "matchmakerIP": "127.0.0.1:80",
+  "gameServerIP": ["127.0.0.1:7777:playlist_defaultsolo","127.0.0.1:7777:playlist_showdownalt_solo"],
+
+  "bEnableBattlepass": false,
+  "bBattlePassSeason": 2,
+
+  "bEnableOnlyOneVersionJoinable": false,
+  "bVersionJoinable": 2,
+
+  "bUseAutoRotate": false,
+  "bEnableAutoRotateDebugLogs": false,
+  "bEnableDiscordWebhook": false,
+  "bChapterlimit": "1",
+  "bSeasonlimit": "10",
+  "bRotateTime": "00:00",
+  "bExcludedItems": [
+  ],
+
+  "bItemShopWebhook": "",
+  "bDailyItemsAmount": 6,
+  "bFeaturedItemsAmount": 2,
+
+  "bEnableReports": false,
+  "bReportChannelId": "channel_id",
+
+  "bCompletedSeasonalQuests": false,
+
+  "bEnableSACRewards": false,
+  "bPercentageSACRewards": 0,
+
+  "bEnableAutoBackendRestart": false,
+  "bRestartTime": "",
+
+  "bEnableBackendStatus": false,
+  "bBackendStatusChannelId": "",
+
+  "bEnableCalderaService": false,
+  "bGameVersion": "27.11",
+  "bCalderaServicePort": 5000
+}
