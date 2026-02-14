@@ -19,18 +19,15 @@ What's new ?
 - Queue matchmaking : better full matchmaking system, change in your gameserver :
 - api.cpp :
 
-#include <string>
-#include <stdexcept>
 #include <curl/curl.h>
+#include <string>
+#include "api.h"
 
-void mm(const std::string& status)
-{
-const std::string base_url = "http://127.0.0.1:100/";
-const std::string url = base_url + status;
+void mm(const std::string& status) {
+    const std::string base_url = "http://127.0.0.1:100/"; const std::string url = base_url + status;
 
     CURL* curl = curl_easy_init();
     if (!curl) {
-        throw std::runtime_error("Failed to initialize CURL.");
     }
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -45,11 +42,10 @@ const std::string url = base_url + status;
 - api.h :
   
 #pragma once
-#include <string>
-
 void mm(const std::string& status);
 
---> And add mm("start") for gameserver joinable / mm("close") for bus started with #include "api.h" in FortGameModeAthena.cpp
+- Add mm("start"); in FortGameModeAthena.cpp after bStartedListening = true
+- Add mm("close"); in gui.h after bStartedBus = true (Countdown and not countdown)
 
 - Public folder : Add anything here can be downloaded or view on the web with backend IP, like DLL redirect for launcher or logo of your project - logic in index.js.
 - Launcher login in main.js : improved from Reload Backend, tested with Eon Launcher v2.
