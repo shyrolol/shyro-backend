@@ -44,8 +44,8 @@ void mm(const std::string& status) {
 #pragma once
 void mm(const std::string& status);
 
---> Add mm("start"); in FortGameModeAthena.cpp after bStartedListening = true
---> Add mm("close"); in gui.h after bStartedBus = true (Countdown and not countdown)
+- Add mm("start"); in FortGameModeAthena.cpp after bStartedListening = true
+- Add mm("close"); in gui.h after bStartedBus = true (Countdown and not countdown)
 
 - Public folder : Add anything here can be downloaded or view on the web with backend IP, like DLL redirect for launcher or logo of your project - logic in index.js.
 - Launcher login in main.js : improved from Reload Backend, tested with Eon Launcher v2.
