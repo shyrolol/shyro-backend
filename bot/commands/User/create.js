@@ -8,6 +8,12 @@ module.exports = {
         description: "Creates an account",
         options: [
             {
+                name: "email",
+                description: "Your email.",
+                required: true,
+                type: 3
+            },
+            {
                 name: "password",
                 description: "Your password.",
                 required: true,
@@ -21,11 +27,11 @@ module.exports = {
         const { options } = interaction;
 
         const discordId = interaction.user.id;
-        const email = interaction.user.username + "@shyro.com";
+        const email = options.get("email").value;
         const username = interaction.user.username;
         const password = options.get("password").value;
 
-        const plainEmail = email;
+        const plainEmail = options.get('email').value;
         const plainUsername = interaction.user.username;
 
         const existingEmail = await User.findOne({ email: plainEmail });

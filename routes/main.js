@@ -589,45 +589,46 @@ app.post("/datarouter/api/v1/public/data", async (req, res) => {
           if (EventName && ProviderType === "Client") {
             const playerKills = Number(PlayerKilledPlayerEventCount) || 0;
 
-            switch (EventName) {
-              case "Athena.ClientWonMatch":
-                await addVictoryHypePoints(findUser);
-                await functions.SeasonXp(findUser, 70, false);
-                await functions.updateUserLevel(req, findUser);
+          switch (EventName) {
+            case "Athena.ClientWonMatch":
+              await addVictoryHypePoints(findUser);
+              await functions.SeasonXp(findUser, 70, false);
+              await functions.updateUserLevel(req, findUser);
+              break;
 
-              case "Combat.AthenaClientEngagement":
-                for (let i = 0; i < playerKills; i++) {
-                  await addEliminationHypePoints(findUser);
-                }
-                await functions.SeasonXp(findUser, 30 * playerKills, false);
-                await functions.updateUserLevel(req, findUser);
+            case "Combat.AthenaClientEngagement":
+              for (let i = 0; i < playerKills; i++) {
+                await addEliminationHypePoints(findUser);
+              }
+              await functions.SeasonXp(findUser, 30 * playerKills, false);
+              await functions.updateUserLevel(req, findUser);
+              break;
 
-              case "Combat.ClientPlayerDeath":
-                await deductBusFareHypePoints(findUser);
-                await functions.SeasonXp(findUser, 110, false);
-                await functions.updateUserLevel(req, findUser);
+            case "Combat.ClientPlayerDeath":
+              await deductBusFareHypePoints(findUser);
+              await functions.SeasonXp(findUser, 110, false);
+              await functions.updateUserLevel(req, findUser);
+              break;
 
-                break;
+            case "Core.ClientStartMatch":
+              await functions.SeasonXp(findUser, 100, false);
+              await functions.updateUserLevel(req, findUser);
+              break;
 
-              case "Core.ClientStartMatch":
-                await functions.SeasonXp(findUser, 100, false);
-                await functions.updateUserLevel(req, findUser);
-                break;
-
-              default:
-                break;
-            }
+            default:
+              break;
           }
         }
-      } else {
       }
+    } else {
     }
+  }
 
     res.status(204).send();
-  } catch (error) {
-    console.error("Error processing data router request:", error);
-    res.status(500).send("Internal Server Error");
-  }
+} catch (error) {
+  console.error("Error processing data router request:", error);
+  res.status(500).send("Internal Server Error");
+}
 });
 
 app.post("/api/v1/assets/Fortnite/*/*", async (req, res) => {

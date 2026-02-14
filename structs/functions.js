@@ -988,5 +988,8 @@ module.exports = {
     getBPLvl,
     updateBPLvl,
     updateUserLevel,
-    SeasonXp
-}
+    SeasonXp,
+    addEliminationHypePoints,
+    addVictoryHypePoints,
+    deductBusFareHypePoints
+};
