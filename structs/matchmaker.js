@@ -40,7 +40,6 @@ async function handleConnection(ws, req) {
             payload: { state: "Connecting" },
             name: "StatusUpdate"
         }));
-        console.log(`[${clientIp}] QUEUED`);
     }
 
     async function Waiting() {
