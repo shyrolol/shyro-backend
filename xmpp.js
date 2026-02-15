@@ -16,9 +16,18 @@ const matchmaker = require("./structs/matchmaker.js");
 const port = config.bEnableHTTPS ? 443 : 80;
 let wss;
 
-wss = new WebSocket({ server: app.listen(port) });
+const httpServer = app.listen(port);
+
+wss = new WebSocket({ 
+  server: httpServer,
+  verifyClient: (info, callback) => {
+    info.req = info.req; 
+    callback(true);
+  }
+});
+
 log.xmpp(
-  `XMPP and Matchmaker started listening on port ${port}`,
+  `XMPP started listening on port ${port}`,
 );
 
 global.xmppDomain = "prod.ol.epicgames.com";
@@ -60,9 +69,9 @@ app.get("/clients", (req, res) => {
 
 wss.on("listening", () => {});
 
-wss.on("connection", async (ws) => {
+wss.on("connection", async (ws, req) => {
   ws.on("error", () => {});
-  if (ws.protocol.toLowerCase() != "xmpp") return matchmaker(ws);
+  if (ws.protocol.toLowerCase() != "xmpp") return matchmaker(ws, req);
 
   let joinedMUCs = [];
   let accountId = "";

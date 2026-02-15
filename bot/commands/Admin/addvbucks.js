@@ -68,44 +68,6 @@ module.exports = {
             });
         }
 
-        const purchaseId = uuid.v4();
-        const lootList = [{
-            "itemType": "Currency:MtxGiveaway",
-            "itemGuid": "Currency:MtxGiveaway",
-            "quantity": vbucks
-        }];
-
-        common_core.items[purchaseId] = {
-            "templateId": `GiftBox:GB_MakeGood`,
-            "attributes": {
-                "fromAccountId": `[Administrator]`,
-                "lootList": lootList,
-                "params": {
-                    "userMessage": `Thanks For Using Shyro Backend!`
-                },
-                "giftedOn": new Date().toISOString()
-            },
-            "quantity": 1
-        };
-
-        let ApplyProfileChanges = [
-            {
-                "changeType": "itemQuantityChanged",
-                "itemId": "Currency:MtxPurchased",
-                "quantity": newQuantityCommonCore
-            },
-            { 
-                "changeType": "itemQuantityChanged",
-                "itemId": "Currency:MtxPurchased",
-                "quantity": newQuantityProfile0
-            },
-            {
-                "changeType": "itemAdded",
-                "itemId": purchaseId,
-                "templateId": "GiftBox:GB_MakeGood"
-            }
-        ];
-
         common_core.rvn += 1;
         common_core.commandRevision += 1;
         common_core.updated = new Date().toISOString();
@@ -119,10 +81,8 @@ module.exports = {
 
         const embed = new MessageEmbed()
             .setTitle("V-Bucks Updated")
-            .setDescription(`Successfully added **${vbucks}** V-Bucks to <@${selectedUserId}> with a GiftBox`)
-            
+            .setDescription(`Successfully added **${vbucks}** V-Bucks to <@${selectedUserId}> (direct, no giftbox)`)
             .setColor("GREEN")
-
             .setTimestamp();
 
         await interaction.editReply({ embeds: [embed], ephemeral: true });
@@ -130,7 +90,6 @@ module.exports = {
         return {
             profileRevision: common_core.rvn,
             profileCommandRevision: common_core.commandRevision,
-            profileChanges: ApplyProfileChanges,
             newQuantityCommonCore,
             newQuantityProfile0
         };

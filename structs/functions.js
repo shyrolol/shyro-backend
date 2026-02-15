@@ -882,26 +882,18 @@ async function updateUserLevel(req, user) {
 
 async function SeasonXp(user, xp, bUseXMPP) {
     const findProfile = await Profile.findOne({ accountId: user.accountId });
-
     if (!findProfile) {
         return { success : false, message: "Profile not found." };
     }
-
     const athena = findProfile.profiles["athena"];
-
     if (!athena) {
         return { success : false, message: "Athena profile not found." };
     }
-
-    const season = athena.stats.attributes.season_num;
     const currentLevel = athena.stats.attributes.level || 1;
     const currentXp = athena.stats.attributes.xp || 0;
-
     const xpUpdate = updateLvlAndXp(currentLevel, currentXp, xp);
-
     athena.stats.attributes.level = xpUpdate.level;
     athena.stats.attributes.xp = xpUpdate.xp;
-
     if (xpUpdate.levelsEarned > 0) {
         const xpIncrements = {
             5: 5, 10: 10, 15: 5, 20: 10,
@@ -910,61 +902,16 @@ async function SeasonXp(user, xp, bUseXMPP) {
             65: 5, 70: 10, 75: 5, 80: 10,
             85: 5, 90: 10, 95: 5, 100: 10
         };
-
         for (let i = 1; i <= xpUpdate.levelsEarned; i++) {
             const newLevel = currentLevel + i;
             const bookXpToAdd = xpIncrements[newLevel] || 2;
             athena.stats.attributes.book_xp = (athena.stats.attributes.book_xp || 0) + bookXpToAdd;
         }
-
     }
-
-    const xpGiftBox = athena.items?.XpGive;
-
-    if (!xpGiftBox) {
-        athena.items = {
-            ...athena.items,
-            XpGive: {
-                templateId: "GiftBox:GB_MakeGood",
-                attributes: {
-                    lootList: [
-                        {
-                            itemType: "Token:AthenaSeasonXpBoost",
-                            itemGuid: "Token:AthenaSeasonXpBoost",
-                            quantity: xp,
-                        },
-                    ],
-                    params: {
-                        userMessage: `Vous avez gagné ${xp} XP durant votre partie.`,
-                    },
-                    giftedOn: new Date().toISOString(),
-                },
-                quantity: 1,
-            },
-        };
-    } else {
-        const totalXpWon = xpGiftBox.attributes.lootList[0].quantity + xp;
-        xpGiftBox.attributes.lootList[0].quantity = totalXpWon;
-        xpGiftBox.attributes.params.userMessage = `Vous avez gagné ${totalXpWon} XP durant votre partie.`;
-    }
-
     athena.rvn++;
     athena.commandRevision++;
     athena.updated = new Date().toISOString();
-
     await Profile.updateOne({ accountId: user.accountId }, { $set: findProfile });
-
-    if (bUseXMPP) {
-        sendXmppMessageToId(
-            {
-                type: "com.epicgames.gift.received",
-                payload: {},
-                timestamp: new Date().toISOString(),
-            },
-            user.accountId
-        );
-    }
-
     return { success: true, message: "Season XP updated successfully." };
 }
 

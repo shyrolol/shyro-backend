@@ -383,6 +383,12 @@ app.get("/Builds/Fortnite/Content/CloudDir/*.chunk", async (req, res) => {
   res.status(200).send(chunk).end();
 });
 
+app.get("/api/v1/events/Fortnite/ShyroTournament/history/405400b8e95d44369bb9fa9df71c27eb", async (req, res) => {
+  log.debug("GET /api/v1/events/Fortnite/ShyroTournament/history/405400b8e95d44369bb9fa9df71c27eb called");
+  res.json({});
+  res.status(204);
+});
+
 app.post("/fortnite/api/game/v2/grant_access/*", async (req, res) => {
   log.debug("POST /fortnite/api/game/v2/grant_access/* called");
   res.json({});

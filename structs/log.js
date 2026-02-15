@@ -24,6 +24,15 @@ function backend(...args) {
     }
 }
 
+function matchmaker(...args) {
+    let msg = args.join(" ");
+    if (config.bEnableFormattedLogs) {
+        formatLog("\x1b[36m", "Matchmaker", ...args);
+    } else {
+        console.log(`\x1b[36m[MATCHMAKER]\x1b[0m: ${msg}`);
+    }
+}
+
 function bot(...args) {
     let msg = args.join(" ");
     if (config.bEnableFormattedLogs) {
@@ -99,5 +108,6 @@ module.exports = {
     debug,
     AutoRotation,
     autobackendrestart,
-    calderaservice
+    calderaservice,
+    matchmaker
 };

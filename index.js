@@ -76,7 +76,7 @@ fs.readdirSync("./routes").forEach((fileName) => {
 
 app.get("/unknown", (req, res) => {
   log.debug("GET /unknown endpoint called");
-  res.json({ msg: "Shyro Backend - Made by Shyro" });
+  res.json({ msg: "Shyro Backend - Made by Shyro, credits to Burlone" });
 });
 
 app.get('/server-status/', (req, res) => {

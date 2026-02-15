@@ -29,12 +29,6 @@ app.get("/fortnite/api/game/v2/matchmakingservice/ticket/player/*", verifyToken,
     const rawPlaylist = bucketId.split(":")[3];
     let playlist = functions.PlaylistNames(rawPlaylist).toLowerCase();
 
-    const gameServers = config.gameServerIP;
-    let selectedServer = gameServers.find(server => server.split(":")[2].toLowerCase() === playlist);
-    if (!selectedServer) {
-        log.debug("No server found for playlist", playlist);
-        return error.createError("errors.com.epicgames.common.matchmaking.playlist.not_found", `No server found for playlist ${playlist}`, [], 1013, "invalid_playlist", 404, res);
-    }
     await global.kv.set(`playerPlaylist:${req.user.accountId}`, playlist);
     if (typeof playerCustomKey == "string") {
         let codeDocument = await MMCode.findOne({ code_lower: playerCustomKey?.toLowerCase() });
@@ -55,8 +49,12 @@ app.get("/fortnite/api/game/v2/matchmakingservice/ticket/player/*", verifyToken,
     buildUniqueId[req.user.accountId] = req.query.bucketId.split(":")[0];
 
     const matchmakerIP = config.matchmakerIP;
+    const serviceUrl = matchmakerIP.includes("ws") || matchmakerIP.includes("wss") ? matchmakerIP : `ws://${matchmakerIP}`;
+    
+    const encodedUrl = `${serviceUrl}/${req.user.accountId}/${playlist}`;
+    
     return res.json({
-        "serviceUrl": matchmakerIP.includes("ws") || matchmakerIP.includes("wss") ? matchmakerIP : `ws://${matchmakerIP}`,
+        "serviceUrl": encodedUrl,
         "ticketType": "mms-player",
         "payload": `${req.user.matchmakingId}`,
         "signature": "account"
@@ -74,30 +72,47 @@ app.get("/fortnite/api/game/v2/matchmaking/account/:accountId/session/:sessionId
 
 app.get("/fortnite/api/matchmaking/session/:sessionId", verifyToken, async (req, res) => {
     log.debug(`GET /fortnite/api/matchmaking/session/${req.params.sessionId} called`);
-    const playlist = await global.kv.get(`playerPlaylist:${req.user.accountId}`);
-    let kvDocument = await global.kv.get(`playerCustomKey:${req.user.accountId}`);
-    if (!kvDocument) {
-        const gameServers = config.gameServerIP;
-        let selectedServer = gameServers.find(server => server.split(":")[2] === playlist);
-        if (!selectedServer) {
-            log.debug("No server found for playlist", playlist);
-            return error.createError("errors.com.epicgames.common.matchmaking.playlist.not_found", `No server found for playlist ${playlist}`, [], 1013, "invalid_playlist", 404, res);
+    let sessionData = await global.kv.get(`matchmakingSession:${req.params.sessionId}`);
+    
+    let codeKV;
+    if (sessionData) {
+        try {
+            codeKV = JSON.parse(sessionData);
+        } catch (e) {
+            log.debug(`Failed to parse session data for ${req.params.sessionId}`);
+            codeKV = null;
         }
-        kvDocument = JSON.stringify({
-            ip: selectedServer.split(":")[0],
-            port: selectedServer.split(":")[1],
-            playlist: selectedServer.split(":")[2]
-        });
     }
-    let codeKV = JSON.parse(kvDocument);
+    
+    if (!codeKV) {
+        const playlist = await global.kv.get(`playerPlaylist:${req.user.accountId}`);
+        let kvDocument = await global.kv.get(`playerCustomKey:${req.user.accountId}`);
+        if (!kvDocument) {
+            const gameServers = config.gameServerIP;
+            let selectedServer = gameServers.find(server => server.split(":")[2] === playlist);
+            if (!selectedServer) {
+                log.debug("No server found for playlist", playlist);
+                return error.createError("errors.com.epicgames.common.matchmaking.playlist.not_found", `No server found for playlist ${playlist}`, [], 1013, "invalid_playlist", 404, res);
+            }
+            kvDocument = JSON.stringify({
+                ip: selectedServer.split(":")[0],
+                port: selectedServer.split(":")[1],
+                playlist: selectedServer.split(":")[2]
+            });
+        }
+        codeKV = JSON.parse(kvDocument);
+    }
+
+    const serverAddress = codeKV.server ? codeKV.server.address.split(":")[0] : codeKV.ip;
+    const serverPort = codeKV.server ? codeKV.server.address.split(":")[1] : codeKV.port;
 
     res.json({
         "id": req.params.sessionId,
         "ownerId": functions.MakeID().replace(/-/ig, "").toUpperCase(),
         "ownerName": "[DS]fortnite-liveeugcec1c2e30ubrcore0a-z8hj-1968",
         "serverName": "[DS]fortnite-liveeugcec1c2e30ubrcore0a-z8hj-1968",
-        "serverAddress": codeKV.ip,
-        "serverPort": codeKV.port,
+        "serverAddress": serverAddress,
+        "serverPort": serverPort,
         "maxPublicPlayers": 220,
         "openPublicPlayers": 175,
         "maxPrivatePlayers": 0,
@@ -115,7 +130,7 @@ app.get("/fortnite/api/matchmaking/session/:sessionId", verifyToken, async (req,
           "PLAYLISTNAME_s": codeKV.playlist,
           "SESSIONKEY_s": functions.MakeID().replace(/-/ig, "").toUpperCase(),
           "TENANT_s": "Fortnite",
-          "BEACONPORT_i": 15009
+          "BEACONPORT_i": 100
         },
         "publicPlayers": [],
         "privatePlayers": [],

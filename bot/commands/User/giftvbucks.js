@@ -125,7 +125,6 @@ module.exports = {
 
             senderCommonCore.rvn += 1;
             senderCommonCore.commandRevision += 1;
-
             recieverCommonCore.rvn += 1;
             recieverCommonCore.commandRevision += 1;
 
@@ -143,30 +142,10 @@ module.exports = {
                 }
             });
 
-            let ApplyProfileChanges = [
-                {
-                    "changeType": "itemQuantityChanged",
-                    "itemId": "Currency:MtxPurchased",
-                    "quantity": recieverCommonCore.items['Currency:MtxPurchased'].quantity
-                },
-                {
-                    "changeType": "itemQuantityChanged",
-                    "itemId": "Currency:MtxPurchased",
-                    "quantity": recieverProfile0.items['Currency:MtxPurchased'].quantity
-                },
-                {
-                    "changeType": "itemAdded",
-                    "itemId": purchaseId,
-                    "templateId": "GiftBox:GB_MakeGood"
-                }
-            ];
-
             const embed = new MessageEmbed()
                 .setTitle("Gift Sent!")
-                .setDescription(`Gifted **${vbucks} V-Bucks** to **${recieveuser.username}**`)
-                
-                .setColor("GREEN")
-
+                .setDescription(`Gifted **${vbucks} V-Bucks** to **${recieveuser.username}** (direct, no giftbox)`)
+                .setColor("GREEN");
 
             await interaction.editReply({ embeds: [embed], ephemeral: true });
 
@@ -175,7 +154,6 @@ module.exports = {
             return {
                 profileRevision: recieverCommonCore.rvn,
                 profileCommandRevision: recieverCommonCore.commandRevision,
-                profileChanges: ApplyProfileChanges,
                 newQuantityCommonCore: recieverCommonCore.items['Currency:MtxPurchased'].quantity,
                 newQuantityProfile0: recieverProfile0.items['Currency:MtxPurchased'].quantity
             };
